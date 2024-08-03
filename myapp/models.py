@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 from django.contrib.auth.models import AbstractUser
@@ -64,8 +64,9 @@ class UserActivityLog(models.Model):
     user = models.ForeignKey('myapp.CustomUser', on_delete=models.CASCADE)
     endpoint = models.CharField(max_length=255)
     method = models.CharField(max_length=10)
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(auto_now_add=True)
     timezone = models.CharField(max_length=50)
 
     def __str__(self):
         return f"{self.user} - {self.endpoint} - {self.timestamp} - {self.method}"
+    

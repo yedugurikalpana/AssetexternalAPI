@@ -7,5 +7,5 @@ def log_user_activity(user, method, endpoint):
             user=user,
             method=method,
             endpoint=endpoint,
-            timezone=timezone.get_current_timezone_name()
+            timezone=timezone.get_current_timezone_name()  
         )

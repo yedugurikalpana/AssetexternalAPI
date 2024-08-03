@@ -1,24 +1,17 @@
 from django.contrib import admin
-
-
-from django.contrib import admin
-
-# Register your models here.
-from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
- 
+from .models import CustomUser, UserActivityLog
+
+# CustomUser Admin
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     fieldsets = UserAdmin.fieldsets + (
         (None, {'fields': ('is_verified', 'one_time_token')}),
     )
- 
-admin.site.register(CustomUser, CustomUserAdmin)
-# Register your models here.
-from django.contrib import admin
-from .models import UserActivityLog
 
+admin.site.register(CustomUser, CustomUserAdmin)
+
+# UserActivityLog Admin
 class UserActivityLogAdmin(admin.ModelAdmin):
     list_display = ('user', 'method', 'endpoint', 'timestamp', 'timezone')
     list_filter = ('method', 'endpoint', 'timezone')

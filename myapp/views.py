@@ -19,6 +19,7 @@ from .serializers import RegisterSerializer, VerifySerializer, LoginSerializer, 
 from .utils import log_user_activity
 
 User = get_user_model()
+Userdetails = UserActivityLog()
 
 class RegisterView(APIView):
     def post(self, request):
@@ -88,6 +89,7 @@ class LoginVerifyView(APIView):
 
                 refresh = RefreshToken.for_user(user)
                 log_user_activity(user, 'POST', '/api/login/verify/')
+                Userdetails.user=CustomUser.objects.get(username=username)
                 return Response({'refresh': str(refresh)}, status=status.HTTP_200_OK)
             except CustomUser.DoesNotExist:
                 return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -237,7 +239,8 @@ def flight_by_date_view(request):
             outgoing_flights_count=outgoing_flights_count,
             total_flights=incoming_flights_count + outgoing_flights_count
         )
-
+    user = Userdetails.user
+    log_user_activity(user, 'POST', '/api/flight/by-date/')
     return Response(result)
 
 
@@ -308,6 +311,9 @@ def flight_by_place_view(request):
     }
 
     response_serializer = FlightByPlaceResponseSerializer(result)
+    
+    user = Userdetails.user
+    log_user_activity(user, 'POST', '/api/flight/by-place/')
     return Response(response_serializer.data)
 
 @api_view(['POST'])
@@ -366,8 +372,10 @@ def flight_by_place_and_date_view(request):
         'outgoing_flights_count': outgoing_flights_count,
         'total_flights': incoming_flights_count + outgoing_flights_count
     }
-
+    
     response_serializer = FlightByPlaceAndDateResponseSerializer(data=result)
+    user = Userdetails.user
+    log_user_activity(user, 'POST', '/api/flight/by-place-and-date/')
     if response_serializer.is_valid():
         return Response(response_serializer.validated_data, status=status.HTTP_200_OK)
     else:
@@ -449,5 +457,6 @@ def flight_summary_view(request):
             outgoing_flights_count=outgoing_flights_count,
             total_flights=incoming_flights_count + outgoing_flights_count
         )
-
+    user = Userdetails.user
+    log_user_activity(user, 'POST', '/api/flight-summary/')
     return Response(result)
